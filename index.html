@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Alex's Journey · HD-2D 个人网站</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Cinzel:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ========== Hero: HD-2D 夜空场景 ========== -->
+<section class="hero" id="home">
+  <!-- 远景层（最虚） -->
+  <div class="layer layer-sky">
+    <div class="moon"></div>
+    <div class="stars"></div>
+  </div>
+
+  <!-- 中景层（轻微虚化） -->
+  <div class="layer layer-mid">
+    <div class="mountain m1"></div>
+    <div class="mountain m2"></div>
+    <div class="mountain m3"></div>
+  </div>
+
+  <!-- 近景层（清晰，像素小屋） -->
+  <div class="layer layer-front">
+    <div class="ground"></div>
+    <div class="house"></div>
+    <div class="tree tree-l"></div>
+    <div class="tree tree-r"></div>
+    <div class="lantern lantern-l"></div>
+    <div class="lantern lantern-r"></div>
+    <div class="character"></div>
+  </div>
+
+  <!-- 萤火虫 -->
+  <canvas id="fireflies"></canvas>
+
+  <!-- 体积光 -->
+  <div class="god-rays"></div>
+
+  <!-- 标题 -->
+  <div class="hero-title">
+    <h1>Alex's Journey</h1>
+    <p class="subtitle">— Chapter I: The Coder of the Starry Night —</p>
+  </div>
+
+  <!-- RPG 菜单 -->
+  <nav class="rpg-menu">
+    <ul>
+      <li><a href="#about" data-icon="►">About</a></li>
+      <li><a href="#blog" data-icon="►">Blog</a></li>
+      <li><a href="#projects" data-icon="►">Projects</a></li>
+      <li><a href="#contact" data-icon="►">Contact</a></li>
+    </ul>
+  </nav>
+
+  <div class="scroll-hint">▼ Press to continue ▼</div>
+</section>
+
+<!-- ========== About: 对话框 ========== -->
+<section class="section about" id="about">
+  <div class="dialogue-box">
+    <div class="dialogue-name">Alex</div>
+    <p class="typed-text">
+      Welcome, traveler. I'm Alex — a developer who codes by moonlight and dreams in pixels.
+      I craft web experiences with React, TypeScript and a touch of magic. ✦
+    </p>
+    <div class="dialogue-arrow">▼</div>
+  </div>
+</section>
+
+<!-- ========== Blog: 任务卷轴 ========== -->
+<section class="section blog" id="blog">
+  <h2 class="section-title">— Quest Log —</h2>
+  <div class="quest-list">
+    <article class="quest-item">
+      <span class="quest-icon">📜</span>
+      <div>
+        <h3>Building HD-2D Effects with CSS</h3>
+        <p>Recreate Octopath Traveler's tilt-shift magic in the browser.</p>
+        <span class="quest-meta">2026 · 06 · 03 &nbsp;|&nbsp; 8 min</span>
+      </div>
+      <span class="quest-status">NEW</span>
+    </article>
+    <article class="quest-item">
+      <span class="quest-icon">⚔️</span>
+      <div>
+        <h3>TypeScript Generics: The Final Boss</h3>
+        <p>Defeating mapped types and conditional types once and for all.</p>
+        <span class="quest-meta">2026 · 05 · 21 &nbsp;|&nbsp; 12 min</span>
+      </div>
+    </article>
+    <article class="quest-item">
+      <span class="quest-icon">🗝️</span>
+      <div>
+        <h3>Astro 5 vs Next.js 16: Which Inn to Stay?</h3>
+        <p>A traveler's review of two static-site kingdoms.</p>
+        <span class="quest-meta">2026 · 04 · 15 &nbsp;|&nbsp; 6 min</span>
+      </div>
+    </article>
+    <article class="quest-item">
+      <span class="quest-icon">🌙</span>
+      <div>
+        <h3>Why I Code at Night</h3>
+        <p>On focus, fireflies, and the romance of empty terminals.</p>
+        <span class="quest-meta">2026 · 03 · 02 &nbsp;|&nbsp; 4 min</span>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ========== Projects: 装备格 ========== -->
+<section class="section projects" id="projects">
+  <h2 class="section-title">— Equipment —</h2>
+  <div class="equipment-grid">
+    <div class="slot rare">
+      <div class="slot-icon">⚛️</div>
+      <div class="slot-name">React-Forge</div>
+      <div class="slot-desc">A component library forged in starlight.</div>
+      <div class="slot-rarity">★★★★★</div>
+    </div>
+    <div class="slot epic">
+      <div class="slot-icon">🛡️</div>
+      <div class="slot-name">Auth-Shield</div>
+      <div class="slot-desc">OAuth2 toolkit. Blocks 99% of attacks.</div>
+      <div class="slot-rarity">★★★★</div>
+    </div>
+    <div class="slot rare">
+      <div class="slot-icon">📡</div>
+      <div class="slot-name">RealtimeOrb</div>
+      <div class="slot-desc">WebSocket framework with auto-reconnect.</div>
+      <div class="slot-rarity">★★★★</div>
+    </div>
+    <div class="slot common">
+      <div class="slot-icon">📚</div>
+      <div class="slot-name">DocSage</div>
+      <div class="slot-desc">Markdown to docs in one incantation.</div>
+      <div class="slot-rarity">★★★</div>
+    </div>
+    <div class="slot epic">
+      <div class="slot-icon">🗡️</div>
+      <div class="slot-name">CLI-Blade</div>
+      <div class="slot-desc">A swift command-line tool for devs.</div>
+      <div class="slot-rarity">★★★★</div>
+    </div>
+    <div class="slot legendary">
+      <div class="slot-icon">👑</div>
+      <div class="slot-name">PixelKingdom</div>
+      <div class="slot-desc">This very website you're exploring.</div>
+      <div class="slot-rarity">★★★★★</div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== Contact ========== -->
+<section class="section contact" id="contact">
+  <div class="dialogue-box">
+    <div class="dialogue-name">Send a Message</div>
+    <p>Find me at the tavern, or send a raven:</p>
+    <div class="contact-links">
+      <a href="#" class="contact-btn">✉ Email</a>
+      <a href="#" class="contact-btn">⚙ GitHub</a>
+      <a href="#" class="contact-btn">𝕏 Twitter</a>
+    </div>
+    <p class="footer-text">— End of Chapter I —</p>
+  </div>
+</section>
+
+<script src="script.js"></script>
+</body>
+</html>
