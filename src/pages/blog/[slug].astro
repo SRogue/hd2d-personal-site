@@ -1,0 +1,35 @@
+---
+import Base from '../../layouts/Base.astro';
+import Bgm from '../../components/Bgm.astro';
+import { getCollection, type CollectionEntry } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+interface Props { post: CollectionEntry<'blog'> }
+const { post } = Astro.props;
+const { Content } = await post.render();
+
+function fmt(d: Date) {
+  return `${d.getFullYear()} · ${String(d.getMonth() + 1).padStart(2, '0')} · ${String(d.getDate()).padStart(2, '0')}`;
+}
+---
+
+<Base title={`${post.data.title} · Alex's Journey`} description={post.data.description}>
+  <Bgm />
+  <article class="post-wrap">
+    <a href="/#blog" class="post-back">◄ Back to Quest Log</a>
+    <h1 class="post-title">{post.data.icon} {post.data.title}</h1>
+    <div class="post-meta">
+      {fmt(post.data.date)}{post.data.readMin ? ` | ${post.data.readMin} min read` : ''}
+    </div>
+    <div class="post-body">
+      <Content />
+    </div>
+  </article>
+</Base>

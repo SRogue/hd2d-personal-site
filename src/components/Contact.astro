@@ -1,0 +1,16 @@
+---
+const { email = 'mailto:hello@example.com', github = 'https://github.com', twitter = 'https://twitter.com' } = Astro.props;
+---
+
+<section class="section contact" id="contact">
+  <div class="dialogue-box">
+    <div class="dialogue-name">Send a Message</div>
+    <p>Find me at the tavern, or send a raven:</p>
+    <div class="contact-links">
+      <a href={email}   class="contact-btn">✉ Email</a>
+      <a href={github}  class="contact-btn">⚙ GitHub</a>
+      <a href={twitter} class="contact-btn">𝕏 Twitter</a>
+    </div>
+    <p class="footer-text">— End of Chapter I —</p>
+  </div>
+</section>

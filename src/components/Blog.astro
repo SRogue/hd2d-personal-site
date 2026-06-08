@@ -1,0 +1,27 @@
+---
+import { getCollection } from 'astro:content';
+
+const all = await getCollection('blog');
+const posts = all.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+function fmt(d: Date) {
+  return `${d.getFullYear()} · ${String(d.getMonth() + 1).padStart(2, '0')} · ${String(d.getDate()).padStart(2, '0')}`;
+}
+---
+
+<section class="section blog" id="blog">
+  <h2 class="section-title">— Quest Log —</h2>
+  <div class="quest-list">
+    {posts.map((post, idx) => (
+      <a class="quest-item" href={`/blog/${post.slug}/`}>
+        <span class="quest-icon">{post.data.icon}</span>
+        <div>
+          <h3>{post.data.title}</h3>
+          <p>{post.data.description}</p>
+          <span class="quest-meta">{fmt(post.data.date)}{post.data.readMin ? ` | ${post.data.readMin} min` : ''}</span>
+        </div>
+        {idx === 0 && <span class="quest-status">{post.data.status ?? 'NEW'}</span>}
+      </a>
+    ))}
+  </div>
+</section>

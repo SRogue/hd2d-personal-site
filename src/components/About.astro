@@ -1,0 +1,35 @@
+---
+const { name = 'Alex', text = "Welcome, traveler. I'm Alex — a developer who codes by moonlight and dreams in pixels. I craft web experiences with React, TypeScript and a touch of magic. ✦" } = Astro.props;
+---
+
+<section class="section about" id="about">
+  <div class="dialogue-box">
+    <div class="dialogue-name">{name}</div>
+    <p class="typed-text" data-full={text}>{text}</p>
+    <div class="dialogue-arrow">▼</div>
+  </div>
+</section>
+
+<script>
+  (() => {
+    const target = document.querySelector<HTMLElement>('.typed-text');
+    if (!target) return;
+    const full = target.dataset.full || target.textContent || '';
+    target.textContent = '';
+    let started = false;
+    const io = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && !started) {
+        started = true;
+        let i = 0;
+        const tick = () => {
+          if (i < full.length) {
+            target.textContent += full[i++];
+            setTimeout(tick, 28);
+          }
+        };
+        tick();
+      }
+    }, { threshold: 0.4 });
+    io.observe(target);
+  })();
+</script>

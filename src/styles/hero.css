@@ -1,0 +1,338 @@
+/* ===== Hero HD-2D 夜空场景 ===== */
+.hero {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  min-height: 600px;
+  overflow: hidden;
+  background: linear-gradient(180deg,
+    #050818 0%,
+    #0a0e2c 30%,
+    #1a1f4d 60%,
+    #2d3270 85%,
+    #4a3a5c 100%);
+}
+.layer { position: absolute; inset: 0; pointer-events: none; }
+
+.layer-sky { filter: blur(2px); }
+.layer-mid { filter: blur(1.2px); }
+.layer-front { filter: none; }
+
+.moon {
+  position: absolute;
+  top: 12%; right: 18%;
+  width: 110px; height: 110px;
+  background: radial-gradient(circle at 35% 35%, #fff8d8, #f5e9c4 50%, #d4b97c 80%);
+  border-radius: 50%;
+  box-shadow:
+    0 0 60px rgba(245, 233, 196, 0.6),
+    0 0 120px rgba(245, 233, 196, 0.3),
+    0 0 200px rgba(245, 233, 196, 0.15);
+  animation: moonGlow 4s ease-in-out infinite;
+}
+@keyframes moonGlow {
+  0%, 100% { box-shadow: 0 0 60px rgba(245,233,196,.6), 0 0 120px rgba(245,233,196,.3), 0 0 200px rgba(245,233,196,.15); }
+  50%      { box-shadow: 0 0 80px rgba(245,233,196,.8), 0 0 160px rgba(245,233,196,.4), 0 0 260px rgba(245,233,196,.2); }
+}
+
+.stars {
+  position: absolute; inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 20px 30px, #fff, transparent),
+    radial-gradient(1px 1px at 40px 70px, #fff, transparent),
+    radial-gradient(2px 2px at 90px 40px, #fff, transparent),
+    radial-gradient(1px 1px at 130px 80px, #fff, transparent),
+    radial-gradient(1px 1px at 160px 120px, #fff, transparent),
+    radial-gradient(2px 2px at 220px 50px, #fff, transparent),
+    radial-gradient(1px 1px at 280px 100px, #fff, transparent),
+    radial-gradient(1px 1px at 320px 30px, #fff, transparent),
+    radial-gradient(2px 2px at 380px 90px, #fff, transparent),
+    radial-gradient(1px 1px at 450px 60px, #fff, transparent),
+    radial-gradient(1px 1px at 520px 140px, #fff, transparent),
+    radial-gradient(1px 1px at 580px 20px, #fff, transparent);
+  background-size: 600px 200px;
+  background-repeat: repeat;
+  opacity: 0.85;
+  animation: twinkle 3s ease-in-out infinite;
+}
+@keyframes twinkle {
+  0%, 100% { opacity: 0.85; }
+  50%      { opacity: 0.55; }
+}
+
+.mountain {
+  position: absolute;
+  bottom: 25%;
+  width: 0; height: 0;
+  border-left: 200px solid transparent;
+  border-right: 200px solid transparent;
+}
+.m1 { left: -5%;  border-bottom: 220px solid #1a1f4d; }
+.m2 { left: 30%;  border-left-width: 260px; border-right-width: 260px; border-bottom: 280px solid #151938; }
+.m3 { right: -5%; border-bottom: 200px solid #1e2350; }
+
+.ground {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 25%;
+  background: linear-gradient(180deg, #2a3055 0%, #1a1f3a 60%, #0d1126 100%);
+  box-shadow: inset 0 30px 60px rgba(0,0,0,.4);
+}
+.ground::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 4px;
+  background: repeating-linear-gradient(90deg, #3a4070 0 12px, #2a3055 12px 24px);
+}
+
+.house {
+  position: absolute;
+  bottom: 18%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px; height: 70px;
+  background: #6b4a3a;
+  filter: drop-shadow(0 0 30px rgba(255,183,107,.4));
+}
+.house::before {
+  content: '';
+  position: absolute;
+  top: -38px; left: -12px;
+  width: 0; height: 0;
+  border-left: 52px solid transparent;
+  border-right: 52px solid transparent;
+  border-bottom: 38px solid #8b3a3a;
+}
+.house::after {
+  content: '';
+  position: absolute;
+  top: 18px; left: 26px;
+  width: 28px; height: 22px;
+  background: #ffb56b;
+  box-shadow:
+    0 0 20px #ffb56b,
+    0 0 40px rgba(255,181,107,.6),
+    inset 0 0 0 3px #6b4a3a,
+    inset 14px 0 0 0 #6b4a3a,
+    inset 0 11px 0 0 #6b4a3a;
+  animation: windowFlicker 5s ease-in-out infinite;
+}
+@keyframes windowFlicker {
+  0%, 92%, 100% { opacity: 1; }
+  95% { opacity: 0.7; }
+}
+
+.tree {
+  position: absolute;
+  bottom: 18%;
+  width: 30px; height: 60px;
+  background: #4a2818;
+}
+.tree::before {
+  content: '';
+  position: absolute;
+  bottom: 30px; left: -25px;
+  width: 80px; height: 80px;
+  background: #1f3a28;
+  border-radius: 50% 50% 45% 55%;
+  box-shadow: inset -8px -8px 0 #152a1c, inset 6px 6px 0 #2a4a32;
+}
+.tree-l { left: 15%; transform: scale(0.85); }
+.tree-r { right: 15%; transform: scale(1.1); }
+
+.lantern {
+  position: absolute;
+  bottom: 26%;
+  width: 14px; height: 18px;
+  background: #ffb56b;
+  border-radius: 4px;
+  box-shadow:
+    0 0 30px #ffb56b,
+    0 0 60px rgba(255,181,107,.7),
+    0 0 100px rgba(255,181,107,.4);
+  animation: lanternFlicker 2.3s ease-in-out infinite;
+}
+.lantern::before {
+  content: '';
+  position: absolute;
+  top: -10px; left: 50%;
+  transform: translateX(-50%);
+  width: 2px; height: 10px;
+  background: #2a1810;
+}
+.lantern-l { left: 32%; animation-delay: -1s; }
+.lantern-r { right: 32%; }
+@keyframes lanternFlicker {
+  0%, 100% { box-shadow: 0 0 30px #ffb56b, 0 0 60px rgba(255,181,107,.7), 0 0 100px rgba(255,181,107,.4); }
+  50%      { box-shadow: 0 0 25px #ffb56b, 0 0 50px rgba(255,181,107,.5), 0 0 80px rgba(255,181,107,.3); }
+}
+
+.character {
+  position: absolute;
+  bottom: 22%;
+  left: 42%;
+  width: 16px; height: 24px;
+  background: transparent;
+  box-shadow:
+    4px 0 0 #f0c9a4,  8px 0 0 #f0c9a4,
+    0  4px 0 #2a1810, 4px 4px 0 #f0c9a4, 8px 4px 0 #f0c9a4, 12px 4px 0 #2a1810,
+    0  8px 0 #2a1810, 4px 8px 0 #f0c9a4, 8px 8px 0 #f0c9a4, 12px 8px 0 #2a1810,
+    0  12px 0 #3a5fbf, 4px 12px 0 #3a5fbf, 8px 12px 0 #3a5fbf, 12px 12px 0 #3a5fbf,
+    0  16px 0 #3a5fbf, 4px 16px 0 #3a5fbf, 8px 16px 0 #3a5fbf, 12px 16px 0 #3a5fbf,
+    4px 20px 0 #2a1810, 8px 20px 0 #2a1810;
+  animation: characterIdle 2s ease-in-out infinite;
+  filter: drop-shadow(0 4px 4px rgba(0,0,0,.5));
+}
+@keyframes characterIdle {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-2px); }
+}
+
+#fireflies {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.god-rays {
+  position: absolute;
+  top: 12%; right: 18%;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle at center,
+    rgba(245, 233, 196, 0.18) 0%,
+    rgba(245, 233, 196, 0.08) 30%,
+    transparent 70%);
+  pointer-events: none;
+  z-index: 1;
+  animation: rayPulse 6s ease-in-out infinite;
+}
+@keyframes rayPulse {
+  0%, 100% { opacity: 0.7; }
+  50%      { opacity: 1; }
+}
+
+.hero-title {
+  position: absolute;
+  top: 18%;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  z-index: 3;
+  width: 90%;
+}
+.hero-title h1 {
+  font-family: var(--serif);
+  font-size: clamp(36px, 6vw, 72px);
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: 4px;
+  text-shadow:
+    0 0 20px rgba(255, 215, 112, 0.6),
+    0 0 40px rgba(255, 215, 112, 0.3),
+    3px 3px 0 #2a1810;
+  margin-bottom: 12px;
+}
+.hero-title .subtitle {
+  font-family: var(--vt);
+  font-size: clamp(16px, 2.4vw, 24px);
+  color: #d4b97c;
+  letter-spacing: 2px;
+  opacity: 0.9;
+}
+
+.rpg-menu {
+  position: absolute;
+  bottom: 8%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 4;
+  background: var(--box-bg);
+  border: 3px solid var(--box-border);
+  padding: 20px 50px;
+  box-shadow:
+    0 0 0 3px var(--box-bg),
+    0 0 0 5px var(--box-border),
+    0 8px 30px rgba(0,0,0,.6),
+    inset 0 0 30px rgba(212, 185, 124, 0.15);
+}
+.rpg-menu ul {
+  display: flex;
+  gap: 40px;
+  list-style: none;
+}
+.rpg-menu a {
+  font-family: var(--serif);
+  font-size: 22px;
+  color: var(--text);
+  text-decoration: none;
+  letter-spacing: 2px;
+  position: relative;
+  padding-left: 24px;
+  transition: color .2s;
+}
+.rpg-menu a::before {
+  content: '►';
+  position: absolute;
+  left: 0;
+  color: var(--gold);
+  opacity: 0;
+  transition: opacity .2s;
+}
+.rpg-menu a:hover { color: var(--gold); text-shadow: 0 0 12px rgba(255,215,112,.7); }
+.rpg-menu a:hover::before { opacity: 1; animation: arrowBounce .6s ease-in-out infinite; }
+@keyframes arrowBounce {
+  0%, 100% { transform: translateX(0); }
+  50%      { transform: translateX(4px); }
+}
+
+.scroll-hint {
+  position: absolute;
+  bottom: 2%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--vt);
+  color: var(--gold);
+  letter-spacing: 4px;
+  opacity: .7;
+  z-index: 4;
+  animation: scrollBounce 1.5s ease-in-out infinite;
+}
+@keyframes scrollBounce {
+  0%, 100% { transform: translate(-50%, 0); }
+  50%      { transform: translate(-50%, 6px); }
+}
+
+/* ===== 移动端竖屏：场景重新布局，避免元素重叠 ===== */
+@media (max-width: 720px) {
+  .hero { min-height: 560px; }
+  .moon { width: 70px; height: 70px; top: 8%; right: 10%; }
+  .god-rays { width: 320px; height: 320px; top: 4%; right: 0; }
+
+  .mountain { bottom: 22%; }
+  .m1 { border-left-width: 130px; border-right-width: 130px; border-bottom-width: 150px; }
+  .m2 { left: 25%; border-left-width: 170px; border-right-width: 170px; border-bottom-width: 200px; }
+  .m3 { border-left-width: 130px; border-right-width: 130px; border-bottom-width: 140px; }
+
+  .ground { height: 22%; }
+  .house { transform: translateX(-50%) scale(0.75); bottom: 16%; }
+  .tree-l { left: 6%;  transform: scale(0.65); }
+  .tree-r { right: 6%; transform: scale(0.85); }
+  .lantern-l { left: 24%; }
+  .lantern-r { right: 24%; }
+  .character { left: 40%; transform: scale(0.9); }
+
+  .hero-title { top: 14%; }
+  .hero-title h1 { letter-spacing: 2px; }
+
+  .rpg-menu { padding: 14px 18px; bottom: 6%; width: calc(100% - 24px); max-width: 360px; }
+  .rpg-menu ul { gap: 14px; flex-wrap: wrap; justify-content: center; }
+  .rpg-menu a { font-size: 16px; padding-left: 16px; }
+  .scroll-hint { font-size: 14px; bottom: 1%; }
+}
+
+@media (max-width: 420px) {
+  .moon { width: 56px; height: 56px; }
+  .house { transform: translateX(-50%) scale(0.6); }
+  .rpg-menu ul { gap: 10px; }
+  .rpg-menu a { font-size: 14px; }
+}

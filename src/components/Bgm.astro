@@ -1,0 +1,176 @@
+---
+// 用 Web Audio 合成八方旅人风格的循环 BGM，免外部 mp3
+---
+
+<button class="bgm-toggle" id="bgmToggle" title="Toggle BGM" aria-label="Toggle background music">
+  <span id="bgmIcon">♪</span>
+</button>
+
+<script>
+  /* eslint-disable */
+  type Voice = 'lead' | 'pad' | 'bass' | 'bell';
+
+  const btn = document.getElementById('bgmToggle') as HTMLButtonElement;
+  const icon = document.getElementById('bgmIcon') as HTMLSpanElement;
+
+  let ctx: AudioContext | null = null;
+  let master: GainNode | null = null;
+  let timer: number | null = null;
+  let playing = false;
+  let step = 0;
+
+  // 自然小调 A 调（HD-2D 常见: 神秘 + 温暖）
+  // 频率: A3=220, B3=246.94, C4=261.63, D4=293.66, E4=329.63, F4=349.23, G4=392, A4=440, C5=523.25, E5=659.25
+  const N = {
+    A3: 220, B3: 246.94, C4: 261.63, D4: 293.66, E4: 329.63,
+    F4: 349.23, G4: 392.0, A4: 440, B4: 493.88, C5: 523.25,
+    D5: 587.33, E5: 659.25, F5: 698.46, G5: 783.99, A5: 880,
+    A2: 110, E2: 82.41, D2: 73.42, F2: 87.31, G2: 98,
+  };
+
+  // 主旋律: 16 步 x 4 小节 = 64 步
+  const melody: (number | null)[] = [
+    N.A4, null, N.C5, null, N.E5, null, N.D5, N.C5,
+    N.B4, null, N.A4, null, N.G4, null, N.E4, null,
+    N.F4, null, N.A4, null, N.C5, null, N.B4, N.A4,
+    N.G4, null, N.E4, null, N.D4, null, null,  null,
+    N.A4, null, N.C5, null, N.E5, null, N.G5, N.E5,
+    N.D5, null, N.C5, null, N.B4, null, N.A4, null,
+    N.E5, null, N.D5, null, N.C5, null, N.B4, N.A4,
+    N.G4, null, N.A4, null, N.B4, null, null,  null,
+  ];
+
+  // 低音 (每 4 步换一次)
+  const bass: (number | null)[] = [
+    N.A2, null, null, null, N.A2, null, null, null,
+    N.F2, null, null, null, N.F2, null, null, null,
+    N.D2, null, null, null, N.D2, null, null, null,
+    N.E2, null, null, null, N.E2, null, null, null,
+    N.A2, null, null, null, N.A2, null, null, null,
+    N.F2, null, null, null, N.F2, null, null, null,
+    N.G2, null, null, null, N.G2, null, null, null,
+    N.E2, null, null, null, N.E2, null, null, null,
+  ];
+
+  // 铃铛装饰 (稀疏)
+  const bell: (number | null)[] = [
+    null, null, null, null, null, null, null, null,
+    null, null, null, null, null, null, null, N.E5,
+    null, null, null, null, null, null, null, null,
+    null, null, null, null, null, null, null, N.A5,
+    null, null, null, null, null, null, null, null,
+    null, null, null, null, null, null, null, N.G5,
+    null, null, null, null, null, null, null, null,
+    null, null, null, null, null, null, null, N.E5,
+  ];
+
+  const STEP_MS = 240; // BPM ≈ 100 in 16th notes-ish
+
+  function makeReverb(c: AudioContext) {
+    const conv = c.createConvolver();
+    const len = c.sampleRate * 2;
+    const buf = c.createBuffer(2, len, c.sampleRate);
+    for (let ch = 0; ch < 2; ch++) {
+      const data = buf.getChannelData(ch);
+      for (let i = 0; i < len; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3);
+      }
+    }
+    conv.buffer = buf;
+    return conv;
+  }
+
+  function playNote(freq: number, voice: Voice, when: number) {
+    if (!ctx || !master) return;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    let dur = 0.4;
+    let peak = 0.18;
+
+    if (voice === 'lead') {
+      osc.type = 'triangle';
+      dur = 0.55;
+      peak = 0.16;
+    } else if (voice === 'pad') {
+      osc.type = 'sine';
+      dur = 1.4;
+      peak = 0.05;
+    } else if (voice === 'bass') {
+      osc.type = 'sine';
+      dur = 1.0;
+      peak = 0.22;
+    } else if (voice === 'bell') {
+      osc.type = 'sine';
+      dur = 1.6;
+      peak = 0.10;
+    }
+
+    osc.frequency.setValueAtTime(freq, when);
+    gain.gain.setValueAtTime(0, when);
+    gain.gain.linearRampToValueAtTime(peak, when + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, when + dur);
+
+    osc.connect(gain);
+    gain.connect(master);
+    osc.start(when);
+    osc.stop(when + dur + 0.05);
+  }
+
+  function tick() {
+    if (!ctx) return;
+    const now = ctx.currentTime;
+    const i = step % melody.length;
+
+    const m = melody[i]; if (m) playNote(m, 'lead', now);
+    const b = bass[i];   if (b) playNote(b, 'bass', now);
+    const k = bell[i];   if (k) playNote(k, 'bell', now);
+
+    // 每 16 步加一个长 pad 和声
+    if (i % 16 === 0) {
+      const padRoot = bass[i] ? bass[i]! * 2 : N.A3;
+      playNote(padRoot, 'pad', now);
+      playNote(padRoot * 1.5, 'pad', now);
+    }
+    step++;
+  }
+
+  function start() {
+    if (!ctx) {
+      ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      master = ctx.createGain();
+      master.gain.value = 0.35;
+      const reverb = makeReverb(ctx);
+      const wet = ctx.createGain(); wet.gain.value = 0.25;
+      master.connect(ctx.destination);
+      master.connect(reverb);
+      reverb.connect(wet);
+      wet.connect(ctx.destination);
+    }
+    if (ctx.state === 'suspended') ctx.resume();
+
+    playing = true;
+    btn.classList.add('playing');
+    icon.textContent = '♫';
+    tick();
+    timer = window.setInterval(tick, STEP_MS);
+  }
+
+  function stop() {
+    playing = false;
+    btn.classList.remove('playing');
+    icon.textContent = '♪';
+    if (timer) { clearInterval(timer); timer = null; }
+    if (ctx) ctx.suspend();
+  }
+
+  btn.addEventListener('click', () => {
+    if (playing) stop(); else start();
+  });
+
+  // 离开页面时静音
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden && playing && ctx) ctx.suspend();
+    else if (!document.hidden && playing && ctx) ctx.resume();
+  });
+</script>

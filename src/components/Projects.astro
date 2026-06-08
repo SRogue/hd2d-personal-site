@@ -1,0 +1,24 @@
+---
+const projects = [
+  { name: 'React-Forge',    icon: '⚛️', desc: 'A component library forged in starlight.', rarity: 'rare', stars: 5 },
+  { name: 'Auth-Shield',    icon: '🛡️', desc: 'OAuth2 toolkit. Blocks 99% of attacks.',     rarity: 'epic', stars: 4 },
+  { name: 'RealtimeOrb',    icon: '📡', desc: 'WebSocket framework with auto-reconnect.',  rarity: 'rare', stars: 4 },
+  { name: 'DocSage',        icon: '📚', desc: 'Markdown to docs in one incantation.',      rarity: 'common', stars: 3 },
+  { name: 'CLI-Blade',      icon: '🗡️', desc: 'A swift command-line tool for devs.',       rarity: 'epic', stars: 4 },
+  { name: 'PixelKingdom',   icon: '👑', desc: "This very website you're exploring.",        rarity: 'legendary', stars: 5 },
+];
+---
+
+<section class="section projects" id="projects">
+  <h2 class="section-title">— Equipment —</h2>
+  <div class="equipment-grid">
+    {projects.map((p) => (
+      <div class={`slot ${p.rarity}`}>
+        <div class="slot-icon">{p.icon}</div>
+        <div class="slot-name">{p.name}</div>
+        <div class="slot-desc">{p.desc}</div>
+        <div class="slot-rarity">{'★'.repeat(p.stars)}</div>
+      </div>
+    ))}
+  </div>
+</section>
