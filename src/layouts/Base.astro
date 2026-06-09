@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import LanguageToggle from '../components/LanguageToggle.astro';
 const { title = "Alex's Journey · HD-2D Personal Site", description = "A pixel-art HD-2D personal website inspired by Octopath Traveler." } = Astro.props;
 ---
 
@@ -8,14 +9,15 @@ const { title = "Alex's Journey · HD-2D Personal Site", description = "A pixel-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="description" content={description} />
-  <title>{title}</title>
+  <meta name="description" content={description} data-i18n-attr="content:meta.description" />
+  <title data-i18n="meta.title">{title}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Cinzel:wght@500;700&display=swap" rel="stylesheet" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 </head>
 <body>
+  <LanguageToggle />
   <slot />
 </body>
 </html>

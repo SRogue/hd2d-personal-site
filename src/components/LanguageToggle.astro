@@ -1,0 +1,73 @@
+---
+// 中英文语言切换按钮 — RPG 风格
+---
+
+<button class="lang-toggle" id="langToggle" aria-label="Switch language">
+  <span id="langLabel">中文</span>
+</button>
+
+<style>
+  .lang-toggle {
+    position: fixed;
+    top: 20px;
+    right: 86px;
+    z-index: 100;
+    height: 56px;
+    padding: 0 18px;
+    background: var(--box-bg);
+    border: 3px solid var(--box-border);
+    color: var(--gold);
+    font-family: var(--pixel);
+    font-size: 12px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all .2s;
+    box-shadow:
+      0 0 0 3px var(--box-bg),
+      0 0 0 5px var(--box-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .lang-toggle:hover {
+    color: #fff;
+    box-shadow:
+      0 0 0 3px var(--box-bg),
+      0 0 0 5px var(--gold),
+      0 0 25px rgba(255,215,112,.5);
+  }
+  @media (max-width: 720px) {
+    .lang-toggle {
+      height: 44px;
+      padding: 0 12px;
+      font-size: 10px;
+      top: 12px;
+      right: 66px;
+    }
+  }
+</style>
+
+<script>
+  import { initI18n, setLang, getLang } from '../i18n/index';
+
+  // 初始化 i18n 系统
+  initI18n();
+
+  const btn = document.getElementById('langToggle') as HTMLButtonElement;
+  const label = document.getElementById('langLabel') as HTMLSpanElement;
+
+  // 更新按钮标签
+  function updateLabel() {
+    label.textContent = getLang() === 'en' ? '中文' : 'EN';
+  }
+  updateLabel();
+
+  btn.addEventListener('click', () => {
+    const next = getLang() === 'en' ? 'zh' : 'en';
+    setLang(next);
+    updateLabel();
+  });
+
+  // 监听其他可能的语言切换事件
+  window.addEventListener('langchange', () => updateLabel());
+</script>

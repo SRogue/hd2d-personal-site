@@ -10,15 +10,20 @@ function fmt(d: Date) {
 ---
 
 <section class="section blog" id="blog">
-  <h2 class="section-title">— Quest Log —</h2>
+  <h2 class="section-title" data-i18n="blog.title">— Quest Log —</h2>
   <div class="quest-list">
     {posts.map((post, idx) => (
-      <a class="quest-item" href={`/blog/${post.slug}/`}>
+      <a class="quest-item" href={`${import.meta.env.BASE_URL}/blog/${post.slug}/`}>
         <span class="quest-icon">{post.data.icon}</span>
         <div>
           <h3>{post.data.title}</h3>
           <p>{post.data.description}</p>
-          <span class="quest-meta">{fmt(post.data.date)}{post.data.readMin ? ` | ${post.data.readMin} min` : ''}</span>
+          <span class="quest-meta">
+            {fmt(post.data.date)}
+            {post.data.readMin && (
+              <> | {post.data.readMin} <span data-i18n="blog.minRead">min</span></>
+            )}
+          </span>
         </div>
         {idx === 0 && <span class="quest-status">{post.data.status ?? 'NEW'}</span>}
       </a>

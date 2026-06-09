@@ -23,10 +23,13 @@ function fmt(d: Date) {
 <Base title={`${post.data.title} · Alex's Journey`} description={post.data.description}>
   <Bgm />
   <article class="post-wrap">
-    <a href="/#blog" class="post-back">◄ Back to Quest Log</a>
+    <a href={`${import.meta.env.BASE_URL}/#blog`} class="post-back" data-i18n="post.back">◄ Back to Quest Log</a>
     <h1 class="post-title">{post.data.icon} {post.data.title}</h1>
     <div class="post-meta">
-      {fmt(post.data.date)}{post.data.readMin ? ` | ${post.data.readMin} min read` : ''}
+      {fmt(post.data.date)}
+      {post.data.readMin && (
+        <> | {post.data.readMin} <span data-i18n="post.minRead">min read</span></>
+      )}
     </div>
     <div class="post-body">
       <Content />

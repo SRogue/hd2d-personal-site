@@ -4,8 +4,8 @@ const { name = 'Alex', text = "Welcome, traveler. I'm Alex — a developer who c
 
 <section class="section about" id="about">
   <div class="dialogue-box">
-    <div class="dialogue-name">{name}</div>
-    <p class="typed-text" data-full={text}>{text}</p>
+    <div class="dialogue-name" data-i18n="about.name">{name}</div>
+    <p class="typed-text" data-full={text} data-i18n="about.text" data-i18n-full="about.text">{text}</p>
     <div class="dialogue-arrow">▼</div>
   </div>
 </section>
@@ -14,22 +14,39 @@ const { name = 'Alex', text = "Welcome, traveler. I'm Alex — a developer who c
   (() => {
     const target = document.querySelector<HTMLElement>('.typed-text');
     if (!target) return;
-    const full = target.dataset.full || target.textContent || '';
-    target.textContent = '';
+
+    let typingTimer: ReturnType<typeof setTimeout> | null = null;
     let started = false;
+
+    function startTyping() {
+      const full = target.dataset.full || target.textContent || '';
+      target.textContent = '';
+      let i = 0;
+      const tick = () => {
+        if (i < full.length) {
+          target.textContent += full[i++];
+          typingTimer = setTimeout(tick, 28);
+        }
+      };
+      tick();
+    }
+
+    // 首次滚动到可视区域时启动打字效果
     const io = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting && !started) {
         started = true;
-        let i = 0;
-        const tick = () => {
-          if (i < full.length) {
-            target.textContent += full[i++];
-            setTimeout(tick, 28);
-          }
-        };
-        tick();
+        startTyping();
       }
     }, { threshold: 0.4 });
     io.observe(target);
+
+    // 语言切换时重新打字
+    window.addEventListener('langchange', () => {
+      if (started) {
+        if (typingTimer) clearTimeout(typingTimer);
+        // 短暂延迟让 data-full 属性先更新
+        setTimeout(() => startTyping(), 50);
+      }
+    });
   })();
 </script>
