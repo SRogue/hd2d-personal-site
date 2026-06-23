@@ -1,0 +1,31 @@
+---
+import Base from '../../layouts/Base.astro';
+import Bgm from '../../components/Bgm.astro';
+import { getCollection } from 'astro:content';
+
+const all = await getCollection('blog');
+const posts = import.meta.env.PROD ? all.filter(p => !p.data.draft) : all;
+
+const tagMap = new Map<string, number>();
+posts.forEach(p => {
+  p.data.tags.forEach(tag => {
+    tagMap.set(tag, (tagMap.get(tag) || 0) + 1);
+  });
+});
+const tags = [...tagMap.entries()].sort((a, b) => b[1] - a[1]);
+---
+
+<Base title="Tags · Alex's Journey" description="Browse by tag">
+  <Bgm />
+  <main class="list-page">
+    <h1 class="section-title" data-i18n="tags.title">— Tags —</h1>
+    <a href={`${import.meta.env.BASE_URL}/blog/`} class="post-back" data-i18n="post.back">◄ Back</a>
+    <div class="tag-cloud">
+      {tags.map(([tag, count]) => (
+        <a class="tag-cloud-item" href={`${import.meta.env.BASE_URL}/tags/${tag}/`} style={`font-size: ${Math.min(28, 14 + count * 4)}px`}>
+          {tag} <span class="tag-count">({count})</span>
+        </a>
+      ))}
+    </div>
+  </main>
+</Base>

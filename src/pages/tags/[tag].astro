@@ -1,0 +1,46 @@
+---
+import Base from '../../layouts/Base.astro';
+import Bgm from '../../components/Bgm.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const all = await getCollection('blog');
+  const posts = import.meta.env.PROD ? all.filter(p => !p.data.draft) : all;
+  const tagSet = new Set<string>();
+  posts.forEach(p => p.data.tags.forEach(t => tagSet.add(t)));
+  return [...tagSet].map(tag => ({
+    params: { tag },
+    props: {
+      posts: posts.filter(p => p.data.tags.includes(tag))
+        .sort((a, b) => b.data.date.getTime() - a.data.date.getTime()),
+    },
+  }));
+}
+
+const tag = Astro.params.tag!;
+const { posts } = Astro.props;
+
+function fmt(d: Date) {
+  return `${d.getFullYear()} · ${String(d.getMonth() + 1).padStart(2, '0')} · ${String(d.getDate()).padStart(2, '0')}`;
+}
+---
+
+<Base title={`#${tag} · Alex's Journey`} description={`Posts tagged ${tag}`}>
+  <Bgm />
+  <main class="list-page">
+    <h1 class="section-title">#{tag}</h1>
+    <a href={`${import.meta.env.BASE_URL}/tags/`} class="post-back" data-i18n="post.back">◄ Back</a>
+    <div class="quest-list">
+      {posts.map((post) => (
+        <a class="quest-item" href={`${import.meta.env.BASE_URL}/blog/${post.slug}/`}>
+          <span class="quest-icon">{post.data.icon}</span>
+          <div>
+            <h3>{post.data.title}</h3>
+            <p>{post.data.description}</p>
+            <span class="quest-meta">{fmt(post.data.date)}</span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </main>
+</Base>

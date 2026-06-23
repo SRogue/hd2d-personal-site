@@ -1,0 +1,43 @@
+---
+import Base from '../layouts/Base.astro';
+import Bgm from '../components/Bgm.astro';
+import { getCollection } from 'astro:content';
+
+const all = await getCollection('blog');
+const posts = (import.meta.env.PROD ? all.filter(p => !p.data.draft) : all)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+const yearMap = new Map<number, typeof posts>();
+posts.forEach(p => {
+  const year = p.data.date.getFullYear();
+  if (!yearMap.has(year)) yearMap.set(year, []);
+  yearMap.get(year)!.push(p);
+});
+const years = [...yearMap.keys()].sort((a, b) => b - a);
+
+function fmt(d: Date) {
+  return `${String(d.getMonth() + 1).padStart(2, '0')} · ${String(d.getDate()).padStart(2, '0')}`;
+}
+---
+
+<Base title="Archive · Alex's Journey" description="Blog archive by year">
+  <Bgm />
+  <main class="list-page">
+    <h1 class="section-title" data-i18n="archive.title">— Archive —</h1>
+    <a href={`${import.meta.env.BASE_URL}/blog/`} class="post-back" data-i18n="post.back">◄ Back</a>
+    {years.map(year => (
+      <div class="archive-year-group">
+        <h2 class="archive-year">{year}</h2>
+        <div class="archive-items">
+          {yearMap.get(year)!.map(post => (
+            <a class="archive-item" href={`${import.meta.env.BASE_URL}/blog/${post.slug}/`}>
+              <span class="archive-date">{fmt(post.data.date)}</span>
+              <span class="archive-icon">{post.data.icon}</span>
+              <span class="archive-title">{post.data.title}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    ))}
+  </main>
+</Base>

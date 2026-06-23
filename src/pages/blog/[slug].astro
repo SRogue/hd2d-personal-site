@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import Bgm from '../../components/Bgm.astro';
+import Comments from '../../components/Comments.astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -15,6 +16,13 @@ interface Props { post: CollectionEntry<'blog'> }
 const { post } = Astro.props;
 const { Content, headings } = await post.render();
 const tocHeadings = headings.filter(h => h.depth >= 2 && h.depth <= 3);
+
+const allPosts = (await getCollection('blog'))
+  .filter(p => import.meta.env.PROD ? !p.data.draft : true)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const currentIndex = allPosts.findIndex(p => p.slug === post.slug);
+const prevPost = currentIndex > 0 ? allPosts[currentIndex - 1] : null;
+const nextPost = currentIndex >= 0 && currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null;
 
 function fmt(d: Date) {
   return `${d.getFullYear()} · ${String(d.getMonth() + 1).padStart(2, '0')} · ${String(d.getDate()).padStart(2, '0')}`;
@@ -45,13 +53,30 @@ function fmt(d: Date) {
     </div>
     {post.data.tags.length > 0 && (
       <div class="post-tags">
-        {post.data.tags.map(tag => <span class="post-tag">{tag}</span>)}
+        {post.data.tags.map(tag => <a class="post-tag" href={`${import.meta.env.BASE_URL}/tags/${tag}/`}>{tag}</a>)}
       </div>
     )}
     <div class="post-body">
       <Content />
     </div>
+    {(prevPost || nextPost) && (
+      <nav class="post-nav">
+        {prevPost && (
+          <a class="post-nav-link post-nav-prev" href={`${import.meta.env.BASE_URL}/blog/${prevPost.slug}/`}>
+            <span class="post-nav-dir" data-i18n="post.prev">◄ Previous</span>
+            <span class="post-nav-title">{prevPost.data.icon} {prevPost.data.title}</span>
+          </a>
+        )}
+        {nextPost && (
+          <a class="post-nav-link post-nav-next" href={`${import.meta.env.BASE_URL}/blog/${nextPost.slug}/`}>
+            <span class="post-nav-dir" data-i18n="post.next">Next ►</span>
+            <span class="post-nav-title">{nextPost.data.icon} {nextPost.data.title}</span>
+          </a>
+        )}
+      </nav>
+    )}
   </article>
+  <Comments />
   <script>
     // ── 阅读进度条 ──
     const progressBar = document.getElementById('progressBar');
@@ -91,13 +116,12 @@ function fmt(d: Date) {
           }
         });
       }, { rootMargin: '-80px 0px -70% 0px' });
-
       headingMap.forEach(el => observer.observe(el));
     }
 
     // ── 代码复制按钮 ──
-    const getCopyLabel = () => document.documentElement.lang === 'zh' ? '复制' : 'COPY';
-    const getCopiedLabel = () => document.documentElement.lang === 'zh' ? '已复制!' : 'COPIED!';
+    const getCopyLabel = () => document.documentElement.lang === 'zh-CN' || document.documentElement.lang === 'zh' ? '复制' : 'COPY';
+    const getCopiedLabel = () => document.documentElement.lang === 'zh-CN' || document.documentElement.lang === 'zh' ? '已复制!' : 'COPIED!';
 
     const preElements = document.querySelectorAll<HTMLPreElement>('.post-body pre');
     preElements.forEach(pre => {
@@ -129,12 +153,9 @@ function fmt(d: Date) {
       });
     });
 
-    // ── 语言切换时更新复制按钮文本 ──
     window.addEventListener('langchange', () => {
       document.querySelectorAll<HTMLButtonElement>('.copy-btn').forEach(btn => {
-        if (!btn.classList.contains('copied')) {
-          btn.textContent = getCopyLabel();
-        }
+        if (!btn.classList.contains('copied')) btn.textContent = getCopyLabel();
       });
     });
   </script>

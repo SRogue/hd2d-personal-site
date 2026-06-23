@@ -167,10 +167,15 @@
   50%      { box-shadow: 0 0 25px #ffb56b, 0 0 50px rgba(255,181,107,.5), 0 0 80px rgba(255,181,107,.3); }
 }
 
-.character {
+.character-walker {
   position: absolute;
   bottom: 22%;
-  left: 42%;
+  left: 15%;
+  animation: characterWalk 24s ease-in-out infinite;
+  filter: drop-shadow(0 4px 4px rgba(0,0,0,.5));
+}
+.character {
+  position: relative;
   width: 16px; height: 24px;
   background: transparent;
   box-shadow:
@@ -180,18 +185,39 @@
     0  12px 0 #3a5fbf, 4px 12px 0 #3a5fbf, 8px 12px 0 #3a5fbf, 12px 12px 0 #3a5fbf,
     0  16px 0 #3a5fbf, 4px 16px 0 #3a5fbf, 8px 16px 0 #3a5fbf, 12px 16px 0 #3a5fbf,
     4px 20px 0 #2a1810, 8px 20px 0 #2a1810;
-  animation: characterIdle 2s ease-in-out infinite;
-  filter: drop-shadow(0 4px 4px rgba(0,0,0,.5));
+  animation: characterBounce 0.6s ease-in-out infinite;
 }
-@keyframes characterIdle {
+@keyframes characterWalk {
+  0%   { left: 15%; transform: scaleX(1); }
+  48%  { left: 65%; transform: scaleX(1); }
+  50%  { left: 65%; transform: scaleX(-1); }
+  98%  { left: 15%; transform: scaleX(-1); }
+  100% { left: 15%; transform: scaleX(1); }
+}
+@keyframes characterBounce {
   0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-2px); }
+  50%      { transform: translateY(-3px); }
 }
 
 #fireflies {
   position: absolute; inset: 0;
   pointer-events: none;
   z-index: 2;
+}
+
+#weather {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.mist-layer {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 30%;
+  background: linear-gradient(180deg, transparent 0%, rgba(180,190,220,0.04) 50%, rgba(180,190,220,0.08) 100%);
+  pointer-events: none;
+  z-index: 1;
 }
 
 .god-rays {
@@ -319,7 +345,8 @@
   .tree-r { right: 6%; transform: scale(0.85); }
   .lantern-l { left: 24%; }
   .lantern-r { right: 24%; }
-  .character { left: 40%; transform: scale(0.9); }
+  .character-walker { left: 8%; }
+  .character { transform: scale(0.9); }
 
   .hero-title { top: 14%; }
   .hero-title h1 { letter-spacing: 2px; }

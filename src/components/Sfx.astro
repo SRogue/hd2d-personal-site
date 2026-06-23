@@ -1,0 +1,64 @@
+---
+// 8-bit 音效系统
+// 通过 CustomEvent 'play-sfx' 触发音效
+// 音效类型: click, hover, navigate, achievement, konami
+---
+
+<script>
+  (() => {
+    let ctx: AudioContext | null = null;
+    let enabled = true;
+
+    function getCtx(): AudioContext | null {
+      if (!ctx) {
+        try { ctx = new (window.AudioContext || (window as any).webkitAudioContext)(); }
+        catch { return null; }
+      }
+      return ctx;
+    }
+
+    function playTone(freq: number, duration: number, type: OscillatorType = 'square', volume = 0.12) {
+      const c = getCtx();
+      if (!c || !enabled) return;
+      const osc = c.createOscillator();
+      const gain = c.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, c.currentTime);
+      gain.gain.setValueAtTime(volume, c.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + duration);
+      osc.connect(gain);
+      gain.connect(c.destination);
+      osc.start();
+      osc.stop(c.currentTime + duration);
+    }
+
+    function playSequence(notes: Array<{f:number;d:number;delay:number;t?:OscillatorType}>) {
+      notes.forEach(n => setTimeout(() => playTone(n.f, n.d, n.t || 'square'), n.delay));
+    }
+
+    const sfxMap: Record<string, () => void> = {
+      click: () => playTone(800, 0.05, 'square', 0.08),
+      hover: () => playTone(600, 0.03, 'sine', 0.04),
+      navigate: () => playSequence([{f:523,d:0.06,delay:0},{f:659,d:0.06,delay:60},{f:784,d:0.08,delay:120}]),
+      achievement: () => playSequence([{f:523,d:0.1,delay:0},{f:659,d:0.1,delay:100},{f:784,d:0.1,delay:200},{f:1047,d:0.2,delay:300}]),
+      konami: () => playSequence([{f:523,d:0.1,delay:0,t:'triangle' as OscillatorType},{f:659,d:0.1,delay:100,t:'triangle' as OscillatorType},{f:784,d:0.1,delay:200,t:'triangle' as OscillatorType},{f:1047,d:0.1,delay:300,t:'triangle' as OscillatorType},{f:1319,d:0.3,delay:400,t:'triangle' as OscillatorType}]),
+    };
+
+    window.addEventListener('play-sfx', (e: Event) => {
+      const { type } = (e as CustomEvent).detail;
+      if (sfxMap[type]) sfxMap[type]();
+    });
+
+    function attachSfx() {
+      document.querySelectorAll('a, button').forEach(el => {
+        if ((el as HTMLElement).dataset.sfxAttached) return;
+        (el as HTMLElement).dataset.sfxAttached = '1';
+        el.addEventListener('click', () => window.dispatchEvent(new CustomEvent('play-sfx', { detail: { type: 'click' } })));
+        el.addEventListener('mouseenter', () => window.dispatchEvent(new CustomEvent('play-sfx', { detail: { type: 'hover' } })));
+      });
+    }
+    attachSfx();
+    const observer = new MutationObserver(() => attachSfx());
+    observer.observe(document.body, { childList: true, subtree: true });
+  })();
+</script>

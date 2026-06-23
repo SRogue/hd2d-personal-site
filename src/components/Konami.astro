@@ -1,0 +1,41 @@
+---
+// Konami Code 彩蛋: ↑↑↓↓←→←→BA
+---
+
+<script>
+  (() => {
+    const KONAMI = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+    let position = 0;
+
+    document.addEventListener('keydown', (e) => {
+      const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+      if (key === KONAMI[position]) {
+        position++;
+        if (position === KONAMI.length) {
+          position = 0;
+          triggerKonami();
+        }
+      } else {
+        position = key === KONAMI[0] ? 1 : 0;
+      }
+    });
+
+    function triggerKonami() {
+      window.dispatchEvent(new CustomEvent('play-sfx', { detail: { type: 'konami' } }));
+      if ((window as any).unlockAchievement) (window as any).unlockAchievement('konami');
+
+      const overlay = document.createElement('div');
+      overlay.style.cssText = 'position:fixed;inset:0;z-index:99998;pointer-events:none;opacity:0;transition:opacity 0.3s;background:linear-gradient(135deg,rgba(255,0,0,.15),rgba(255,165,0,.15),rgba(255,255,0,.15),rgba(0,128,0,.15),rgba(0,0,255,.15),rgba(75,0,130,.15),rgba(238,130,238,.15));';
+      document.body.appendChild(overlay);
+      requestAnimationFrame(() => { overlay.style.opacity = '1'; });
+      setTimeout(() => { overlay.style.opacity = '0'; setTimeout(() => overlay.remove(), 500); }, 3000);
+
+      const msg = document.createElement('div');
+      msg.className = 'konami-message';
+      msg.textContent = '✦ SECRET UNLOCKED ✦';
+      document.body.appendChild(msg);
+      setTimeout(() => msg.classList.add('show'), 100);
+      setTimeout(() => { msg.classList.remove('show'); setTimeout(() => msg.remove(), 500); }, 3500);
+    }
+  })();
+</script>

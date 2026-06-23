@@ -127,6 +127,36 @@ export const translations = {
 
   // ── Post TOC ──
   'post.toc': { en: 'Contents', zh: '目录' },
+
+  // ── Post Navigation ──
+  'post.prev': { en: '◄ Previous', zh: '◄ 上一篇' },
+  'post.next': { en: 'Next ►', zh: '下一篇 ►' },
+
+  // ── Blog List ──
+  'blog.allTitle': { en: '— All Quests —', zh: '— 全部任务 —' },
+  'blog.viewAll': { en: '▼ View All Quests ▼', zh: '▼ 查看全部任务 ▼' },
+
+  // ── Tags ──
+  'tags.title': { en: '— Tags —', zh: '— 标签 —' },
+
+  // ── Archive ──
+  'archive.title': { en: '— Archive —', zh: '— 归档 —' },
+
+  // ── Search ──
+  'search.title': { en: '— Search —', zh: '— 搜索 —' },
+  'search.placeholder': { en: 'Enter keywords...', zh: '输入关键词...' },
+  'search.hint': { en: 'Type to search...', zh: '输入关键词搜索...' },
+
+  // ── Comments ──
+  'comments.title': { en: '— Comments —', zh: '— 评论 —' },
+
+  // ── About Choices ──
+  'about.choiceSkills': { en: '► Tell me about your skills', zh: '► 谈谈你的技能' },
+  'about.choiceProjects': { en: '► What are you working on?', zh: '► 你在做什么？' },
+  'about.choiceContact': { en: '► How to contact you?', zh: '► 怎么联系你？' },
+
+  // ── Achievements ──
+  'achievement.unlocked': { en: 'Achievement Unlocked!', zh: '成就解锁！' },
 } as const;
 
 export type TranslationKey = keyof typeof translations;

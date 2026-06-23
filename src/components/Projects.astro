@@ -1,11 +1,11 @@
 ---
 const projects = [
-  { name: 'React-Forge',    icon: '⚛️', descKey: 'projects.react-forge.desc',    desc: 'A component library forged in starlight.',     rarity: 'rare', stars: 5 },
-  { name: 'Auth-Shield',    icon: '🛡️', descKey: 'projects.auth-shield.desc',    desc: 'OAuth2 toolkit. Blocks 99% of attacks.',       rarity: 'epic', stars: 4 },
-  { name: 'RealtimeOrb',    icon: '📡', descKey: 'projects.realtime-orb.desc',   desc: 'WebSocket framework with auto-reconnect.',     rarity: 'rare', stars: 4 },
-  { name: 'DocSage',        icon: '📚', descKey: 'projects.docsage.desc',        desc: 'Markdown to docs in one incantation.',         rarity: 'common', stars: 3 },
-  { name: 'CLI-Blade',      icon: '🗡️', descKey: 'projects.cli-blade.desc',      desc: 'A swift command-line tool for devs.',          rarity: 'epic', stars: 4 },
-  { name: 'PixelKingdom',   icon: '👑', descKey: 'projects.pixelkingdom.desc',   desc: "This very website you're exploring.",          rarity: 'legendary', stars: 5 },
+  { name: 'React-Forge',    icon: '⚛️', descKey: 'projects.react-forge.desc',    desc: 'A component library forged in starlight.',     rarity: 'rare',      stars: 5, link: 'https://github.com/SRogue/react-forge' },
+  { name: 'Auth-Shield',    icon: '🛡️', descKey: 'projects.auth-shield.desc',    desc: 'OAuth2 toolkit. Blocks 99% of attacks.',       rarity: 'epic',      stars: 4, link: 'https://github.com/SRogue/auth-shield' },
+  { name: 'RealtimeOrb',    icon: '📡', descKey: 'projects.realtime-orb.desc',   desc: 'WebSocket framework with auto-reconnect.',     rarity: 'rare',      stars: 4, link: 'https://github.com/SRogue/realtime-orb' },
+  { name: 'DocSage',        icon: '📚', descKey: 'projects.docsage.desc',        desc: 'Markdown to docs in one incantation.',         rarity: 'common',    stars: 3, link: 'https://github.com/SRogue/docsage' },
+  { name: 'CLI-Blade',      icon: '🗡️', descKey: 'projects.cli-blade.desc',      desc: 'A swift command-line tool for devs.',          rarity: 'epic',      stars: 4, link: 'https://github.com/SRogue/cli-blade' },
+  { name: 'PixelKingdom',   icon: '👑', descKey: 'projects.pixelkingdom.desc',   desc: "This very website you're exploring.",          rarity: 'legendary', stars: 5, link: 'https://github.com/SRogue/hd2d-personal-site' },
 ];
 ---
 
@@ -13,12 +13,12 @@ const projects = [
   <h2 class="section-title" data-i18n="projects.title">— Equipment —</h2>
   <div class="equipment-grid">
     {projects.map((p) => (
-      <div class={`slot ${p.rarity}`}>
+      <a class={`slot ${p.rarity}`} href={p.link} target="_blank" rel="noopener noreferrer">
         <div class="slot-icon">{p.icon}</div>
         <div class="slot-name">{p.name}</div>
         <div class="slot-desc" data-i18n={p.descKey}>{p.desc}</div>
         <div class="slot-rarity">{'★'.repeat(p.stars)}</div>
-      </div>
+      </a>
     ))}
   </div>
 </section>

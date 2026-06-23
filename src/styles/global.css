@@ -478,6 +478,277 @@ a { color: inherit; }
   .post-toc { display: none; }
 }
 
+/* ===== List Pages (Blog/Tags/Archive/Search) ===== */
+.list-page {
+  min-height: 100vh;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 80px 24px 120px;
+}
+.list-nav {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 40px;
+  align-items: center;
+}
+.list-nav-link {
+  font-family: var(--serif);
+  color: var(--gold);
+  text-decoration: none;
+  letter-spacing: 2px;
+  font-size: 18px;
+  opacity: 0.8;
+  transition: opacity .2s;
+}
+.list-nav-link:hover { opacity: 1; text-shadow: 0 0 10px rgba(255,215,112,.5); }
+
+/* ===== View All Link ===== */
+.view-all-link {
+  display: block;
+  text-align: center;
+  font-family: var(--serif);
+  color: var(--gold);
+  text-decoration: none;
+  letter-spacing: 3px;
+  margin-top: 40px;
+  padding: 16px;
+  border: 2px solid var(--box-border);
+  background: var(--box-bg);
+  transition: all .2s;
+}
+.view-all-link:hover {
+  background: rgba(255,215,112,.1);
+  box-shadow: 0 0 25px rgba(255,215,112,.3);
+}
+
+/* ===== Tag Cloud ===== */
+.tag-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 40px;
+}
+.tag-cloud-item {
+  font-family: var(--vt);
+  color: var(--gold);
+  text-decoration: none;
+  background: var(--box-bg);
+  border: 2px solid var(--box-border);
+  padding: 6px 16px;
+  transition: all .2s;
+  line-height: 1.2;
+}
+.tag-cloud-item:hover {
+  background: rgba(255,215,112,.15);
+  border-color: var(--gold);
+  box-shadow: 0 0 15px rgba(255,215,112,.4);
+  transform: translateY(-3px);
+}
+.tag-count { font-size: 0.7em; opacity: 0.6; }
+
+/* ===== Search ===== */
+.search-box-wrap { margin-bottom: 40px; }
+.search-input {
+  width: 100%;
+  font-family: var(--vt);
+  font-size: 24px;
+  color: var(--text);
+  background: var(--box-bg);
+  border: 3px solid var(--box-border);
+  padding: 16px 24px;
+  outline: none;
+  box-shadow: 0 0 0 3px var(--box-bg), 0 0 0 5px var(--box-border);
+  transition: border-color .2s;
+}
+.search-input:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px var(--box-bg), 0 0 0 5px var(--gold), 0 0 25px rgba(255,215,112,.3);
+}
+.search-input::placeholder { color: rgba(212,185,124,.5); }
+.search-hint {
+  font-family: var(--vt);
+  font-size: 22px;
+  color: #d4b97c;
+  opacity: 0.6;
+  text-align: center;
+  padding: 40px;
+}
+
+/* ===== Archive ===== */
+.archive-year-group { margin-bottom: 50px; }
+.archive-year {
+  font-family: var(--serif);
+  font-size: 36px;
+  color: var(--gold);
+  letter-spacing: 4px;
+  margin-bottom: 20px;
+  text-shadow: 0 0 15px rgba(255,215,112,.3);
+}
+.archive-items { display: flex; flex-direction: column; gap: 10px; }
+.archive-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 20px;
+  background: var(--box-bg);
+  border: 2px solid var(--box-border);
+  text-decoration: none;
+  color: inherit;
+  transition: all .2s;
+}
+.archive-item:hover {
+  transform: translateX(8px);
+  border-color: var(--gold);
+  box-shadow: 0 0 20px rgba(255,215,112,.2);
+}
+.archive-date { font-family: var(--pixel); font-size: 12px; color: #d4b97c; min-width: 70px; }
+.archive-icon { font-size: 24px; }
+.archive-title { font-family: var(--vt); font-size: 20px; color: var(--text); }
+
+/* ===== Post Navigation ===== */
+.post-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin-top: 60px;
+  padding-top: 30px;
+  border-top: 2px solid rgba(212,185,124,.3);
+}
+.post-nav-link {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-decoration: none;
+  color: inherit;
+  max-width: 45%;
+  padding: 16px;
+  background: var(--box-bg);
+  border: 2px solid var(--box-border);
+  transition: all .2s;
+}
+.post-nav-link:hover {
+  border-color: var(--gold);
+  box-shadow: 0 0 20px rgba(255,215,112,.2);
+}
+.post-nav-next { text-align: right; margin-left: auto; }
+.post-nav-dir { font-family: var(--pixel); font-size: 10px; color: var(--gold); letter-spacing: 1px; }
+.post-nav-title { font-family: var(--vt); font-size: 18px; color: var(--text); opacity: 0.85; }
+
+/* ===== Comments ===== */
+.comments-section { max-width: 760px; margin: 60px auto; padding: 0 24px; }
+.comments-title {
+  font-family: var(--serif);
+  font-size: 24px;
+  color: var(--gold);
+  letter-spacing: 3px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+.giscus-container { min-height: 100px; }
+.comments-noscript { text-align: center; color: #d4b97c; opacity: 0.6; }
+
+/* ===== Section Transitions ===== */
+.section-transition {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.section-transition.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== Loading Overlay ===== */
+.loading-overlay {
+  position: fixed; inset: 0;
+  background: var(--night-1);
+  z-index: 9999;
+  display: flex; align-items: center; justify-content: center;
+  transition: opacity 0.5s ease;
+}
+.loading-overlay.hidden { opacity: 0; pointer-events: none; }
+.loading-content { text-align: center; }
+.loading-title {
+  font-family: var(--serif); font-size: 32px; color: var(--gold);
+  letter-spacing: 4px; margin-bottom: 24px;
+  text-shadow: 0 0 20px rgba(255,215,112,.5);
+}
+.loading-bar {
+  width: 240px; height: 8px;
+  background: rgba(255,255,255,0.1);
+  border: 2px solid var(--box-border);
+  overflow: hidden;
+  margin: 0 auto;
+}
+.loading-bar-fill {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, var(--gold), var(--warm));
+  animation: loadingFill 1.2s ease-out forwards;
+}
+@keyframes loadingFill {
+  0% { width: 0%; }
+  100% { width: 100%; }
+}
+.loading-text {
+  font-family: var(--vt); font-size: 18px; color: #d4b97c;
+  margin-top: 16px; letter-spacing: 2px;
+}
+
+/* ===== Dialogue Choices ===== */
+.dialogue-choices { display: flex; flex-direction: column; gap: 8px; margin-top: 20px; }
+.dialogue-choice {
+  font-family: var(--vt); font-size: 20px; color: var(--gold);
+  background: transparent; border: 2px solid transparent;
+  padding: 8px 16px; text-align: left; cursor: pointer;
+  transition: all .2s; letter-spacing: 1px;
+}
+.dialogue-choice:hover {
+  border-color: var(--box-border);
+  background: rgba(212,185,124,.1);
+  text-shadow: 0 0 10px rgba(255,215,112,.4);
+}
+.dialogue-response {
+  font-family: var(--vt); font-size: 22px; line-height: 1.6; color: var(--text);
+  margin-top: 16px; padding: 16px; border-left: 3px solid var(--gold);
+  background: rgba(255,215,112,.05); opacity: 0; max-height: 0; overflow: hidden;
+  transition: opacity .3s, max-height .3s;
+}
+.dialogue-response.visible { opacity: 1; max-height: 300px; }
+
+/* ===== Achievement Toast ===== */
+.achievement-toast {
+  position: fixed; top: 80px; right: -400px; z-index: 200;
+  display: flex; align-items: center; gap: 16px;
+  background: var(--box-bg); border: 3px solid var(--gold); padding: 16px 24px;
+  box-shadow: 0 0 0 3px var(--box-bg), 0 0 0 5px var(--gold), 0 0 30px rgba(255,215,112,.5);
+  transition: right 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+.achievement-toast.show { right: 20px; }
+.achievement-toast-icon { font-size: 36px; }
+.achievement-toast-title {
+  font-family: var(--pixel); font-size: 10px; color: var(--gold);
+  letter-spacing: 1px; margin-bottom: 4px;
+}
+.achievement-toast-name { font-family: var(--serif); font-size: 18px; color: var(--text); }
+
+/* ===== Konami Message ===== */
+.konami-message {
+  position: fixed; top: 50%; left: 50%;
+  transform: translate(-50%, -50%) scale(0); z-index: 99999;
+  font-family: var(--serif); font-size: 48px; color: var(--gold);
+  text-shadow: 0 0 30px rgba(255,215,112,.8), 0 0 60px rgba(255,215,112,.4);
+  letter-spacing: 8px; pointer-events: none;
+  transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+.konami-message.show { transform: translate(-50%, -50%) scale(1); }
+
+/* ===== RPG Menu Keyboard Nav ===== */
+.rpg-menu a.selected { color: var(--gold); text-shadow: 0 0 12px rgba(255,215,112,.7); }
+.rpg-menu a.selected::before { opacity: 1; }
+
 /* 减少动效偏好 */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

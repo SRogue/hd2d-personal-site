@@ -7,6 +7,12 @@ const { name = 'Alex', text = "Welcome, traveler. I'm Alex — a developer who c
     <div class="dialogue-name" data-i18n="about.name">{name}</div>
     <p class="typed-text" data-full={text} data-i18n="about.text" data-i18n-full="about.text">{text}</p>
     <div class="dialogue-arrow">▼</div>
+    <div class="dialogue-choices" id="dialogueChoices">
+      <button class="dialogue-choice" data-choice="skills" data-i18n="about.choiceSkills">► Tell me about your skills</button>
+      <button class="dialogue-choice" data-choice="projects" data-i18n="about.choiceProjects">► What are you working on?</button>
+      <button class="dialogue-choice" data-choice="contact" data-i18n="about.choiceContact">► How to contact you?</button>
+    </div>
+    <div class="dialogue-response" id="dialogueResponse"></div>
   </div>
 </section>
 
@@ -32,7 +38,6 @@ const { name = 'Alex', text = "Welcome, traveler. I'm Alex — a developer who c
       tick();
     }
 
-    // 首次滚动到可视区域时启动打字效果
     const io = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting && !started) {
         started = true;
@@ -41,13 +46,43 @@ const { name = 'Alex', text = "Welcome, traveler. I'm Alex — a developer who c
     }, { threshold: 0.4 });
     io.observe(target);
 
-    // 语言切换时重新打字
     window.addEventListener('langchange', () => {
       if (started) {
         if (typingTimer) clearTimeout(typingTimer);
-        // 短暂延迟让 data-full 属性先更新
         setTimeout(() => startTyping(), 50);
       }
+    });
+
+    // ── 对话选项分支 ──
+    const isZh = () => document.documentElement.lang === 'zh-CN' || document.documentElement.lang === 'zh';
+    const responses: Record<string, { en: string; zh: string }> = {
+      skills: {
+        en: 'My arsenal: React, TypeScript, Astro, Node.js, CSS artistry, and Web Audio magic. Each day I forge new tools and sharpen old ones. ⚔️',
+        zh: '我的武器库：React、TypeScript、Astro、Node.js、CSS 艺术，还有 Web Audio 魔法。每日锻造新工具，磨砺旧 ones。⚔️',
+      },
+      projects: {
+        en: "I'm currently building PixelKingdom — this very site! Also exploring HD-2D web effects and procedural audio synthesis. 🏰",
+        zh: '我正在打造 PixelKingdom —— 就是这个网站！同时探索 HD-2D 网页效果与程序化音频合成。🏰',
+      },
+      contact: {
+        en: 'Scroll down to the Contact section, or send a raven to the tavern. I answer all messages under the moonlight. ✉',
+        zh: '向下滚动到联系区域，或往酒馆放只渡鸦。我在月光下回复所有消息。✉',
+      },
+    };
+
+    const choices = document.querySelectorAll<HTMLButtonElement>('.dialogue-choice');
+    const responseEl = document.getElementById('dialogueResponse');
+
+    choices.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const choice = btn.getAttribute('data-choice');
+        if (!choice || !responseEl) return;
+        const resp = responses[choice];
+        if (!resp) return;
+        responseEl.textContent = isZh() ? resp.zh : resp.en;
+        responseEl.classList.add('visible');
+        window.dispatchEvent(new CustomEvent('play-sfx', { detail: { type: 'navigate' } }));
+      });
     });
   })();
 </script>

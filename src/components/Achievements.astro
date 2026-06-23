@@ -1,0 +1,89 @@
+---
+// 成就系统：浏览行为解锁成就，localStorage 存储，解锁时显示通知
+---
+
+<div class="achievement-toast" id="achievementToast">
+  <div class="achievement-toast-icon">🏆</div>
+  <div class="achievement-toast-content">
+    <div class="achievement-toast-title" data-i18n="achievement.unlocked">Achievement Unlocked!</div>
+    <div class="achievement-toast-name" id="achievementName"></div>
+  </div>
+</div>
+
+<script>
+  (() => {
+    type Achievement = { id: string; name: { en: string; zh: string } };
+
+    const achievements: Achievement[] = [
+      { id: 'first_visit', name: { en: 'First Steps', zh: '初入旅途' } },
+      { id: 'first_read', name: { en: 'Quest Reader', zh: '任务阅读者' } },
+      { id: 'all_read', name: { en: 'Scholar', zh: '学者' } },
+      { id: 'explorer', name: { en: 'Explorer', zh: '探索者' } },
+      { id: 'searcher', name: { en: 'Treasure Hunter', zh: '寻宝者' } },
+      { id: 'konami', name: { en: 'Code Breaker', zh: '破译者' } },
+    ];
+
+    const STORAGE_KEY = 'hd2d_achievements';
+    const isZh = () => document.documentElement.lang === 'zh-CN' || document.documentElement.lang === 'zh';
+
+    function getUnlocked(): Set<string> {
+      try { return new Set(JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]')); }
+      catch { return new Set(); }
+    }
+
+    function unlock(id: string) {
+      const unlocked = getUnlocked();
+      if (unlocked.has(id)) return;
+      unlocked.add(id);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify([...unlocked]));
+      const ach = achievements.find(a => a.id === id);
+      if (!ach) return;
+      const toast = document.getElementById('achievementToast');
+      const nameEl = document.getElementById('achievementName');
+      if (toast && nameEl) {
+        nameEl.textContent = isZh() ? ach.name.zh : ach.name.en;
+        toast.classList.add('show');
+        window.dispatchEvent(new CustomEvent('play-sfx', { detail: { type: 'achievement' } }));
+        setTimeout(() => toast.classList.remove('show'), 4000);
+      }
+    }
+
+    (window as any).unlockAchievement = unlock;
+
+    unlock('first_visit');
+
+    if (window.location.pathname.includes('/blog/')) {
+      unlock('first_read');
+      const READ_KEY = 'hd2d_read_posts';
+      try {
+        const slug = window.location.pathname.split('/blog/')[1]?.replace(/\/$/, '');
+        if (slug) {
+          const read = new Set(JSON.parse(localStorage.getItem(READ_KEY) || '[]'));
+          read.add(slug);
+          localStorage.setItem(READ_KEY, JSON.stringify([...read]));
+          if (read.size >= 4) unlock('all_read');
+        }
+      } catch {}
+    }
+
+    if (window.location.pathname.includes('/search')) unlock('searcher');
+
+    const SECTION_KEY = 'hd2d_visited_sections';
+    try {
+      const visited = new Set(JSON.parse(localStorage.getItem(SECTION_KEY) || '[]'));
+      const sections = document.querySelectorAll('.section[id]');
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            visited.add(e.target.id);
+            localStorage.setItem(SECTION_KEY, JSON.stringify([...visited]));
+            if (['about','blog','projects','contact'].every(s => visited.has(s))) {
+              unlock('explorer');
+            }
+          }
+        });
+      }, { threshold: 0.3 });
+      sections.forEach(s => obs.observe(s));
+    } catch {}
+  })();
+</script>

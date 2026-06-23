@@ -1,0 +1,59 @@
+---
+import Base from '../../layouts/Base.astro';
+import Bgm from '../../components/Bgm.astro';
+import { getCollection } from 'astro:content';
+
+const all = await getCollection('blog');
+const posts = (import.meta.env.PROD ? all.filter(p => !p.data.draft) : all)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+function fmt(d: Date) {
+  return `${d.getFullYear()} · ${String(d.getMonth() + 1).padStart(2, '0')} · ${String(d.getDate()).padStart(2, '0')}`;
+}
+---
+
+<Base title="Blog · Alex's Journey" description="All quest logs">
+  <Bgm />
+  <div class="reading-progress"><div class="reading-progress-bar" id="progressBar"></div></div>
+  <main class="list-page">
+    <h1 class="section-title" data-i18n="blog.allTitle">— All Quests —</h1>
+    <div class="list-nav">
+      <a href={`${import.meta.env.BASE_URL}/#blog`} class="post-back" data-i18n="post.back">◄ Back</a>
+      <a href={`${import.meta.env.BASE_URL}/tags/`} class="list-nav-link" data-i18n="tags.title">— Tags —</a>
+      <a href={`${import.meta.env.BASE_URL}/archive/`} class="list-nav-link" data-i18n="archive.title">— Archive —</a>
+      <a href={`${import.meta.env.BASE_URL}/search/`} class="list-nav-link" data-i18n="search.title">— Search —</a>
+    </div>
+    <div class="quest-list">
+      {posts.map((post) => (
+        <a class="quest-item" href={`${import.meta.env.BASE_URL}/blog/${post.slug}/`}>
+          <span class="quest-icon">{post.data.icon}</span>
+          <div>
+            <h3>{post.data.title}</h3>
+            <p>{post.data.description}</p>
+            <div class="quest-info">
+              <span class="quest-meta">
+                {fmt(post.data.date)}
+                {post.data.readMin && (<> | {post.data.readMin} <span data-i18n="blog.minRead">min</span></>)}
+              </span>
+              {post.data.tags.length > 0 && (
+                <div class="quest-tags">
+                  {post.data.tags.map(tag => <span class="quest-tag">{tag}</span>)}
+                </div>
+              )}
+            </div>
+          </div>
+        </a>
+      ))}
+    </div>
+  </main>
+  <script>
+    const pb = document.getElementById('progressBar');
+    if (pb) {
+      const u = () => {
+        const st = window.scrollY, dh = document.documentElement.scrollHeight - window.innerHeight;
+        pb.style.width = `${dh > 0 ? (st / dh) * 100 : 0}%`;
+      };
+      window.addEventListener('scroll', u, { passive: true }); u();
+    }
+  </script>
+</Base>

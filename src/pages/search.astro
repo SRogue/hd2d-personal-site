@@ -1,0 +1,89 @@
+---
+import Base from '../layouts/Base.astro';
+import Bgm from '../components/Bgm.astro';
+import { getCollection } from 'astro:content';
+
+const all = await getCollection('blog');
+const posts = (import.meta.env.PROD ? all.filter(p => !p.data.draft) : all)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+const searchIndex = posts.map(p => ({
+  title: p.data.title,
+  description: p.data.description,
+  tags: p.data.tags,
+  category: p.data.category || '',
+  slug: p.slug,
+  date: p.data.date.toISOString().split('T')[0],
+  icon: p.data.icon,
+  readMin: p.data.readMin || 0,
+}));
+---
+
+<Base title="Search · Alex's Journey" description="Search blog posts">
+  <Bgm />
+  <main class="list-page search-page">
+    <h1 class="section-title" data-i18n="search.title">— Search —</h1>
+    <div class="search-box-wrap">
+      <input type="text" id="searchInput" class="search-input" placeholder="Enter keywords..." data-i18n-attr="placeholder:search.placeholder" />
+    </div>
+    <div id="searchResults" class="quest-list">
+      <p class="search-hint" data-i18n="search.hint">Type to search...</p>
+    </div>
+  </main>
+  <script type="application/json" id="search-index" set:html={JSON.stringify(searchIndex)}></script>
+  <script>
+    const indexEl = document.getElementById('search-index');
+    const input = document.getElementById('searchInput') as HTMLInputElement | null;
+    const resultsEl = document.getElementById('searchResults')!;
+    if (!indexEl || !input) throw new Error('Missing search elements');
+
+    const searchIndex = JSON.parse(indexEl.textContent || '[]') as Array<{
+      title: string; description: string; tags: string[]; category: string;
+      slug: string; date: string; icon: string; readMin: number;
+    }>;
+    const baseUrl = import.meta.env.BASE_URL;
+
+    const isZh = () => document.documentElement.lang === 'zh-CN' || document.documentElement.lang === 'zh';
+    const hintText = () => isZh() ? '输入关键词搜索...' : 'Type to search...';
+    const noResultText = () => isZh() ? '未找到相关文章' : 'No posts found';
+    const minLabel = () => isZh() ? '分钟' : 'min';
+
+    function render(results: typeof searchIndex) {
+      if (results.length === 0) {
+        resultsEl.innerHTML = `<p class="search-hint">${noResultText()}</p>`;
+        return;
+      }
+      resultsEl.innerHTML = results.map(p => `
+        <a class="quest-item" href="${baseUrl}blog/${p.slug}/">
+          <span class="quest-icon">${p.icon}</span>
+          <div>
+            <h3>${p.title}</h3>
+            <p>${p.description}</p>
+            <div class="quest-info">
+              <span class="quest-meta">${p.date}${p.readMin ? ` | ${p.readMin} ${minLabel()}` : ''}</span>
+              ${p.tags.length > 0 ? `<div class="quest-tags">${p.tags.map((t: string) => `<span class="quest-tag">${t}</span>`).join('')}</div>` : ''}
+            </div>
+          </div>
+        </a>`).join('');
+    }
+
+    function doSearch(query: string) {
+      const q = query.trim().toLowerCase();
+      if (!q) {
+        resultsEl.innerHTML = `<p class="search-hint">${hintText()}</p>`;
+        return;
+      }
+      const results = searchIndex.filter(p =>
+        p.title.toLowerCase().includes(q) ||
+        p.description.toLowerCase().includes(q) ||
+        p.tags.some(t => t.toLowerCase().includes(q)) ||
+        p.category.toLowerCase().includes(q)
+      );
+      render(results);
+    }
+
+    input.addEventListener('input', () => doSearch(input.value));
+    window.addEventListener('langchange', () => doSearch(input.value));
+    input.focus();
+  </script>
+</Base>
