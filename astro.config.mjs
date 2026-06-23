@@ -19,7 +19,7 @@ function resolveSiteAndBase() {
   // Cloudflare Pages: CF_PAGES=1，CF_PAGES_URL 为完整 URL
   if (process.env.CF_PAGES) {
     return {
-      site: process.env.CF_PAGES_URL || 'https://your-pages-domain.pages.dev',
+      site: process.env.CF_PAGES_URL || 'https://hd2d-personal-site.pages.dev',
       base: '/',
     };
   }
