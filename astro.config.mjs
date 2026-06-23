@@ -1,5 +1,7 @@
 import { defineConfig } from 'astro/config';
 
+import cloudflare from "@astrojs/cloudflare";
+
 /**
  * 双平台部署适配：Cloudflare Pages + GitHub Pages
  * 优先级：
@@ -45,13 +47,17 @@ export default defineConfig({
   site,
   base,
   outDir: 'dist',
+
   server: {
     host: true,
   },
+
   markdown: {
     shikiConfig: {
       theme: 'rose-pine-moon',
       wrap: true,
     },
   },
+
+  adapter: cloudflare()
 });
