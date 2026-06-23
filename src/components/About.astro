@@ -14,17 +14,18 @@ const { name = 'Alex', text = "Welcome, traveler. I'm Alex — a developer who c
   (() => {
     const target = document.querySelector<HTMLElement>('.typed-text');
     if (!target) return;
+    const el = target;
 
     let typingTimer: ReturnType<typeof setTimeout> | null = null;
     let started = false;
 
     function startTyping() {
-      const full = target.dataset.full || target.textContent || '';
-      target.textContent = '';
+      const full = el.dataset.full || el.textContent || '';
+      el.textContent = '';
       let i = 0;
       const tick = () => {
         if (i < full.length) {
-          target.textContent += full[i++];
+          el.textContent += full[i++];
           typingTimer = setTimeout(tick, 28);
         }
       };

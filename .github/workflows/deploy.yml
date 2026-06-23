@@ -17,6 +17,9 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      # 告诉 astro.config.mjs 当前是 GitHub Pages 子路径部署
+      GITHUB_PAGES: 'true'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -32,6 +35,11 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Verify build output
+        run: |
+          test -f dist/index.html || (echo "Build output missing" && exit 1)
+          echo "Build output verified"
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
