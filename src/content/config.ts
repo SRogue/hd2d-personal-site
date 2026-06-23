@@ -9,6 +9,10 @@ const blog = defineCollection({
     description: z.string(),
     status: z.enum(['NEW', 'DONE', 'ONGOING']).optional(),
     readMin: z.number().optional(),
+    tags: z.array(z.string()).default([]),
+    category: z.string().optional(),
+    draft: z.boolean().default(false),
+    updated: z.coerce.date().optional(),
   }),
 });
 

@@ -1,8 +1,14 @@
 ---
 import '../styles/global.css';
 import LanguageToggle from '../components/LanguageToggle.astro';
-const { title = "Alex's Journey · HD-2D Personal Site", description = "A pixel-art HD-2D personal website inspired by Octopath Traveler." } = Astro.props;
+const { title = "Alex's Journey · HD-2D Personal Site", description = "A pixel-art HD-2D personal website inspired by Octopath Traveler.", ogImage } = Astro.props;
 const faviconUrl = import.meta.env.BASE_URL + 'favicon.svg';
+const baseUrl = Astro.site?.href || '/';
+const ogImageUrl = ogImage
+  ? new URL(ogImage, baseUrl).href
+  : new URL('og-image.png', baseUrl).href;
+const canonicalUrl = new URL(Astro.url.pathname, baseUrl).href;
+const rssUrl = new URL('rss.xml', baseUrl).href;
 ---
 
 <!DOCTYPE html>
@@ -12,10 +18,26 @@ const faviconUrl = import.meta.env.BASE_URL + 'favicon.svg';
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="description" content={description} data-i18n-attr="content:meta.description" />
   <title data-i18n="meta.title">{title}</title>
+  <link rel="canonical" href={canonicalUrl} />
+  <link rel="alternate" type="application/rss+xml" title="Alex's Journey RSS" href={rssUrl} />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Cinzel:wght@500;700&display=swap" rel="stylesheet" />
   <link rel="icon" type="image/svg+xml" href={faviconUrl} />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:image" content={ogImageUrl} />
+  <meta property="og:url" content={canonicalUrl} />
+  <meta property="og:site_name" content="Alex's Journey" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={ogImageUrl} />
 </head>
 <body>
   <LanguageToggle />

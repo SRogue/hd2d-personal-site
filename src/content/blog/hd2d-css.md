@@ -5,6 +5,8 @@ icon: "📜"
 description: "Recreate Octopath Traveler's tilt-shift magic in the browser."
 status: NEW
 readMin: 8
+tags: ["css", "hd2d", "effects"]
+category: "教程"
 ---
 
 The HD-2D look is built from three ingredients: pixel sprites in the foreground, a softly blurred painterly background, and warm volumetric light bridging them.

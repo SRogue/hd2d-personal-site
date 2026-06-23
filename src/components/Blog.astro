@@ -2,7 +2,8 @@
 import { getCollection } from 'astro:content';
 
 const all = await getCollection('blog');
-const posts = all.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const filtered = import.meta.env.PROD ? all.filter(p => !p.data.draft) : all;
+const posts = filtered.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 
 function fmt(d: Date) {
   return `${d.getFullYear()} · ${String(d.getMonth() + 1).padStart(2, '0')} · ${String(d.getDate()).padStart(2, '0')}`;
@@ -18,12 +19,19 @@ function fmt(d: Date) {
         <div>
           <h3>{post.data.title}</h3>
           <p>{post.data.description}</p>
-          <span class="quest-meta">
-            {fmt(post.data.date)}
-            {post.data.readMin && (
-              <> | {post.data.readMin} <span data-i18n="blog.minRead">min</span></>
+          <div class="quest-info">
+            <span class="quest-meta">
+              {fmt(post.data.date)}
+              {post.data.readMin && (
+                <> | {post.data.readMin} <span data-i18n="blog.minRead">min</span></>
+              )}
+            </span>
+            {post.data.tags.length > 0 && (
+              <div class="quest-tags">
+                {post.data.tags.map(tag => <span class="quest-tag">{tag}</span>)}
+              </div>
             )}
-          </span>
+          </div>
         </div>
         {idx === 0 && <span class="quest-status">{post.data.status ?? 'NEW'}</span>}
       </a>

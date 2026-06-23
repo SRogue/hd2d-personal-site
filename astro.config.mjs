@@ -1,4 +1,5 @@
 import { defineConfig } from 'astro/config';
+import sitemap from '@astrojs/sitemap';
 
 /**
  * 双平台部署适配：Cloudflare Pages + GitHub Pages
@@ -54,4 +55,5 @@ export default defineConfig({
       wrap: true,
     },
   },
+  integrations: [sitemap()],
 });

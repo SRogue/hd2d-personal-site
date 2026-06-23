@@ -4,6 +4,8 @@ date: 2026-03-02
 icon: "🌙"
 description: "On focus, fireflies, and the romance of empty terminals."
 readMin: 4
+tags: ["musings", "productivity"]
+category: "随笔"
 ---
 
 The world goes quiet after midnight. No Slack pings, no doorbells, no meetings. Just a cursor blinking back at me.

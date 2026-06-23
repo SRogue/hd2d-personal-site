@@ -116,6 +116,17 @@ export const translations = {
     en: '中文',
     zh: 'EN',
   },
+
+  // ── Error Pages ──
+  'error.404.title': { en: 'Lost?', zh: '迷路了？' },
+  'error.404.text': {
+    en: "You've wandered into unmapped lands... The path ahead fades into mist. Turn back, traveler.",
+    zh: '你误入了未知的土地……前路隐入迷雾。回头吧，旅人。',
+  },
+  'error.404.back': { en: '◄ Return to Start', zh: '◄ 返回起点' },
+
+  // ── Post TOC ──
+  'post.toc': { en: 'Contents', zh: '目录' },
 } as const;
 
 export type TranslationKey = keyof typeof translations;

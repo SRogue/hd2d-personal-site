@@ -4,6 +4,8 @@ date: 2026-05-21
 icon: "⚔️"
 description: "Defeating mapped types and conditional types once and for all."
 readMin: 12
+tags: ["typescript", "generics", "types"]
+category: "教程"
 ---
 
 Generics feel like a final boss until you realize they're just functions for types.

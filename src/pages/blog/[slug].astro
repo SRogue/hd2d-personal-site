@@ -13,7 +13,8 @@ export async function getStaticPaths() {
 
 interface Props { post: CollectionEntry<'blog'> }
 const { post } = Astro.props;
-const { Content } = await post.render();
+const { Content, headings } = await post.render();
+const tocHeadings = headings.filter(h => h.depth >= 2 && h.depth <= 3);
 
 function fmt(d: Date) {
   return `${d.getFullYear()} · ${String(d.getMonth() + 1).padStart(2, '0')} · ${String(d.getDate()).padStart(2, '0')}`;
@@ -22,6 +23,17 @@ function fmt(d: Date) {
 
 <Base title={`${post.data.title} · Alex's Journey`} description={post.data.description}>
   <Bgm />
+  <div class="reading-progress"><div class="reading-progress-bar" id="progressBar"></div></div>
+  {tocHeadings.length > 0 && (
+    <aside class="post-toc">
+      <div class="toc-title" data-i18n="post.toc">Contents</div>
+      <nav class="toc-nav">
+        {tocHeadings.map(h => (
+          <a href={`#${h.slug}`} class={`toc-link toc-depth-${h.depth}`} data-toc-slug={h.slug}>{h.text}</a>
+        ))}
+      </nav>
+    </aside>
+  )}
   <article class="post-wrap">
     <a href={`${import.meta.env.BASE_URL}/#blog`} class="post-back" data-i18n="post.back">◄ Back to Quest Log</a>
     <h1 class="post-title">{post.data.icon} {post.data.title}</h1>
@@ -31,8 +43,99 @@ function fmt(d: Date) {
         <> | {post.data.readMin} <span data-i18n="post.minRead">min read</span></>
       )}
     </div>
+    {post.data.tags.length > 0 && (
+      <div class="post-tags">
+        {post.data.tags.map(tag => <span class="post-tag">{tag}</span>)}
+      </div>
+    )}
     <div class="post-body">
       <Content />
     </div>
   </article>
+  <script>
+    // ── 阅读进度条 ──
+    const progressBar = document.getElementById('progressBar');
+    if (progressBar) {
+      const updateProgress = () => {
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+        progressBar.style.width = Math.min(100, Math.max(0, progress)) + '%';
+      };
+      window.addEventListener('scroll', updateProgress, { passive: true });
+      updateProgress();
+    }
+
+    // ── TOC 高亮 ──
+    const tocLinks = document.querySelectorAll<HTMLAnchorElement>('.toc-link');
+    const headingMap = new Map<string, HTMLElement>();
+    tocLinks.forEach(link => {
+      const slug = link.getAttribute('data-toc-slug');
+      if (slug) {
+        const el = document.getElementById(slug);
+        if (el) headingMap.set(slug, el);
+      }
+    });
+
+    if (headingMap.size > 0) {
+      let currentActive: HTMLAnchorElement | null = null;
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          const slug = entry.target.id;
+          const link = document.querySelector<HTMLAnchorElement>(`.toc-link[data-toc-slug="${slug}"]`);
+          if (!link) return;
+          if (entry.isIntersecting) {
+            if (currentActive) currentActive.classList.remove('active');
+            link.classList.add('active');
+            currentActive = link;
+          }
+        });
+      }, { rootMargin: '-80px 0px -70% 0px' });
+
+      headingMap.forEach(el => observer.observe(el));
+    }
+
+    // ── 代码复制按钮 ──
+    const getCopyLabel = () => document.documentElement.lang === 'zh' ? '复制' : 'COPY';
+    const getCopiedLabel = () => document.documentElement.lang === 'zh' ? '已复制!' : 'COPIED!';
+
+    const preElements = document.querySelectorAll<HTMLPreElement>('.post-body pre');
+    preElements.forEach(pre => {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'code-block-wrap';
+      pre.parentNode?.insertBefore(wrapper, pre);
+      wrapper.appendChild(pre);
+
+      const btn = document.createElement('button');
+      btn.className = 'copy-btn';
+      btn.textContent = getCopyLabel();
+      wrapper.appendChild(btn);
+
+      btn.addEventListener('click', async () => {
+        const code = pre.querySelector('code');
+        const text = code ? code.innerText : pre.innerText;
+        try {
+          await navigator.clipboard.writeText(text);
+          btn.textContent = getCopiedLabel();
+          btn.classList.add('copied');
+          setTimeout(() => {
+            btn.textContent = getCopyLabel();
+            btn.classList.remove('copied');
+          }, 2000);
+        } catch {
+          btn.textContent = '✗';
+          setTimeout(() => { btn.textContent = getCopyLabel(); }, 2000);
+        }
+      });
+    });
+
+    // ── 语言切换时更新复制按钮文本 ──
+    window.addEventListener('langchange', () => {
+      document.querySelectorAll<HTMLButtonElement>('.copy-btn').forEach(btn => {
+        if (!btn.classList.contains('copied')) {
+          btn.textContent = getCopyLabel();
+        }
+      });
+    });
+  </script>
 </Base>
